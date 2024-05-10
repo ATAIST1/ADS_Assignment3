@@ -4,44 +4,44 @@ package org.example;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void mergeSort(int[] array) {
-        if (array.length <= 1) {
-            return;
+    public static void heapSort(int[] array) {
+        int n = array.length;
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(array, n, i);
         }
 
-        int mid = array.length / 2;
-        int[] leftArray = new int[mid];
-        int[] rightArray = new int[array.length - mid];
-        System.arraycopy(array, 0, leftArray, 0, mid);
-        System.arraycopy(array, mid, rightArray, 0, array.length - mid);
-        mergeSort(leftArray);
-        mergeSort(rightArray);
-        merge(array, leftArray, rightArray);
+        for (int i = n - 1; i > 0; i--) {
+            int temp = array[0];
+            array[0] = array[i];
+            array[i] = temp;
+
+            heapify(array, i, 0);
+        }
     }
 
-    private static void merge(int[] array, int[] leftArray, int[] rightArray) {
-        int leftIndex = 0, rightIndex = 0, arrayIndex = 0;
-
-        while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
-            if (leftArray[leftIndex] <= rightArray[rightIndex]) {
-                array[arrayIndex++] = leftArray[leftIndex++];
-            } else {
-                array[arrayIndex++] = rightArray[rightIndex++];
-            }
+    private static void heapify(int[] array, int n, int i) {
+        int largest = i;
+        int leftChild = 2 * i + 1;
+        int rightChild = 2 * i + 2;
+        if (leftChild < n && array[leftChild] > array[largest]) {
+            largest = leftChild;
         }
-        while (leftIndex < leftArray.length) {
-            array[arrayIndex++] = leftArray[leftIndex++];
+        if (rightChild < n && array[rightChild] > array[largest]) {
+            largest = rightChild;
         }
-        while (rightIndex < rightArray.length) {
-            array[arrayIndex++] = rightArray[rightIndex++];
+        if (largest != i) {
+            int swap = array[i];
+            array[i] = array[largest];
+            array[largest] = swap;
+            heapify(array, n, largest);
         }
     }
 
     public static void main(String[] args) {
         int[] array = {12, 11, 13, 5, 6, 7};
 
-
-        mergeSort(array);
+        heapSort(array);
         printArr(array);
     }
     public static void printArr(int[] arr)
