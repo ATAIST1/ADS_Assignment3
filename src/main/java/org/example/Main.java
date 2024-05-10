@@ -1,38 +1,40 @@
 package org.example;
 import java.sql.SQLOutput;
 import java.util.Random;
+import java.util.Arrays;
 
 public class Main {
-    public static void mergeSort(int[] array) {
-        if (array.length <= 1) {
-            return;
+    public static void heapSort(int[] array) {
+        int n = array.length;
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(array, n, i);
         }
 
-        int mid = array.length / 2;
-        int[] leftArray = new int[mid];
-        int[] rightArray = new int[array.length - mid];
-        System.arraycopy(array, 0, leftArray, 0, mid);
-        System.arraycopy(array, mid, rightArray, 0, array.length - mid);
-        mergeSort(leftArray);
-        mergeSort(rightArray);
-        merge(array, leftArray, rightArray);
+        for (int i = n - 1; i > 0; i--) {
+            int temp = array[0];
+            array[0] = array[i];
+            array[i] = temp;
+
+            heapify(array, i, 0);
+        }
     }
 
-    private static void merge(int[] array, int[] leftArray, int[] rightArray) {
-        int leftIndex = 0, rightIndex = 0, arrayIndex = 0;
-
-        while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
-            if (leftArray[leftIndex] <= rightArray[rightIndex]) {
-                array[arrayIndex++] = leftArray[leftIndex++];
-            } else {
-                array[arrayIndex++] = rightArray[rightIndex++];
-            }
+    private static void heapify(int[] array, int n, int i) {
+        int largest = i;
+        int leftChild = 2 * i + 1;
+        int rightChild = 2 * i + 2;
+        if (leftChild < n && array[leftChild] > array[largest]) {
+            largest = leftChild;
         }
-        while (leftIndex < leftArray.length) {
-            array[arrayIndex++] = leftArray[leftIndex++];
+        if (rightChild < n && array[rightChild] > array[largest]) {
+            largest = rightChild;
         }
-        while (rightIndex < rightArray.length) {
-            array[arrayIndex++] = rightArray[rightIndex++];
+        if (largest != i) {
+            int swap = array[i];
+            array[i] = array[largest];
+            array[largest] = swap;
+            heapify(array, n, largest);
         }
     }
     private static int[] generateRandomArray(int size) {
@@ -43,16 +45,35 @@ public class Main {
         }
         return array;
     }
+    private static int[] generateReverseSortedArray(int size) {
+        int[] array = new int[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = size - i;
+        }
+        return array;
+    }
+    private static int[] generateIdenticalElementsArray(int size, int numIdenticalElements) {
+        int[] array = new int[size];
+        Arrays.fill(array, 0, numIdenticalElements, 10); // Fill first numIdenticalElements with the same value
+        for (int i = numIdenticalElements; i < size; i++) {
+            array[i] = i; // Fill the rest of the array with increasing values
+        }
+        return array;
+    }
     public static void main(String[] args) {
 
         int[] array1000 = generateRandomArray(1000);
         int[] array5000 = generateRandomArray(5000);
         int[] array10000 = generateRandomArray(10000);
-        mergeSort(array5000);
-        int[] sorted = array5000;
+        int[] arrayReverse1000 = generateReverseSortedArray(1000);
+        int[] arrayReverse5000 = generateReverseSortedArray(5000);
+        int[] arrayReverse10000 = generateReverseSortedArray(10000);
+        int[] arrayIdentical1000 = generateIdenticalElementsArray(1000, 500);
+        int[] arrayIdentical5000 = generateIdenticalElementsArray(5000, 2500);
+        int[] arrayIdentical10000 = generateIdenticalElementsArray(10000, 5000);
         long start = System.nanoTime();
-        mergeSort(sorted);
-        printArr(sorted);
+        heapSort(arrayIdentical10000);
+        printArr(arrayIdentical10000);
         System.out.println();
         long duration = (System.nanoTime() - start) / 1000000;
         System.out.println(duration + "ms");
