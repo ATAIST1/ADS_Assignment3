@@ -4,51 +4,50 @@ package org.example;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static void swap(int[] arr, int i, int j)
-    {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+    public static void mergeSort(int[] array) {
+        if (array.length <= 1) {
+            return;
+        }
+
+        int mid = array.length / 2;
+        int[] leftArray = new int[mid];
+        int[] rightArray = new int[array.length - mid];
+        System.arraycopy(array, 0, leftArray, 0, mid);
+        System.arraycopy(array, mid, rightArray, 0, array.length - mid);
+        mergeSort(leftArray);
+        mergeSort(rightArray);
+        merge(array, leftArray, rightArray);
     }
 
-    static int partition(int[] arr, int low, int high)
-    {
-        int pivot = arr[high];
-        int i = (low - 1);
+    private static void merge(int[] array, int[] leftArray, int[] rightArray) {
+        int leftIndex = 0, rightIndex = 0, arrayIndex = 0;
 
-        for (int j = low; j <= high - 1; j++) {
-            if (arr[j] < pivot) {
-                i++;
-                swap(arr, i, j);
+        while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+            if (leftArray[leftIndex] <= rightArray[rightIndex]) {
+                array[arrayIndex++] = leftArray[leftIndex++];
+            } else {
+                array[arrayIndex++] = rightArray[rightIndex++];
             }
         }
-        swap(arr, i + 1, high);
-        return (i + 1);
-    }
-    static void quickSort(int[] arr, int low, int high)
-    {
-        if (low < high) {
-
-            int pi = partition(arr, low, high);
-
-            quickSort(arr, low, pi - 1);
-            quickSort(arr, pi + 1, high);
+        while (leftIndex < leftArray.length) {
+            array[arrayIndex++] = leftArray[leftIndex++];
         }
+        while (rightIndex < rightArray.length) {
+            array[arrayIndex++] = rightArray[rightIndex++];
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] array = {12, 11, 13, 5, 6, 7};
+
+
+        mergeSort(array);
+        printArr(array);
     }
     public static void printArr(int[] arr)
     {
         for (int i = 0; i < arr.length; i++) {
             System.out.print(arr[i] + " ");
         }
-    }
-
-    // Driver Code
-    public static void main(String[] args)
-    {
-        int[] arr = { 10, 7, 8, 9, 1, 5 };
-        int N = arr.length;
-
-        quickSort(arr, 0, N - 1);
-        printArr(arr);
     }
 }
